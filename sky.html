@@ -56,17 +56,29 @@
   .star{
     position:absolute; z-index:4; border:none; background:none; padding:0; cursor:pointer;
     font-family:"Segoe UI Symbol","Apple Symbols",system-ui,"Noto Sans Symbols",sans-serif;
-    font-size:var(--s,18px); line-height:1; color:var(--c,#cfe0f5);
-    text-shadow:0 0 3px #fff, 0 0 7px rgba(255,255,255,.95), 0 0 15px var(--c,#cfe0f5), 0 0 26px var(--c,#cfe0f5);
-    transform:translate(-50%,-50%); transition:transform .25s ease, text-shadow .25s ease;
+    font-size:var(--s,22px); line-height:1; color:var(--c,#cfe0f5);
+    text-shadow:0 0 3px #fff, 0 0 9px var(--c,#cfe0f5), 0 0 18px var(--c,#cfe0f5);
+    transform:translate(-50%,-50%); transition:transform .25s ease;
     animation:glow var(--tw,4s) ease-in-out infinite;
     user-select:none; -webkit-user-select:none;
   }
-  .star:hover, .star:focus-visible{
-    outline:none; transform:translate(-50%,-50%) scale(1.9);
-    text-shadow:0 0 5px #fff, 0 0 12px #fff, 0 0 24px var(--c,#cfe0f5), 0 0 46px var(--c,#cfe0f5);
+  /* soft diffused halo so every star — even a tiny glyph — glows clearly in its colour */
+  .star::before{
+    content:""; position:absolute; left:50%; top:50%; z-index:-1; pointer-events:none;
+    width:calc(var(--s,22px) * 3.8); height:calc(var(--s,22px) * 3.8);
+    transform:translate(-50%,-50%); border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,.95) 0%, var(--c,#cfe0f5) 32%, rgba(255,255,255,0) 72%);
+    opacity:.78; filter:blur(5px);
+    transition:opacity .25s ease, width .25s ease, height .25s ease, filter .25s ease;
+    animation:halo var(--tw,4s) ease-in-out infinite;
   }
-  @keyframes glow{ 0%,100%{opacity:.7;} 50%{opacity:1;} }
+  .star:hover, .star:focus-visible{ outline:none; transform:translate(-50%,-50%) scale(1.7); }
+  .star:hover::before, .star:focus-visible::before{
+    opacity:1; filter:blur(7px);
+    width:calc(var(--s,22px) * 5); height:calc(var(--s,22px) * 5);
+  }
+  @keyframes glow{ 0%,100%{opacity:.85;} 50%{opacity:1;} }
+  @keyframes halo{ 0%,100%{opacity:.6;} 50%{opacity:.95;} }
 
   /* detail panel */
   .panel{
@@ -95,7 +107,7 @@
     .head{ padding:3.4vh 7vw; } .back{ top:3.4vh; right:7vw; }
     .head p{ font-size:.9rem; }
   }
-  @media (prefers-reduced-motion: reduce){ .star{ animation:none; } }
+  @media (prefers-reduced-motion: reduce){ .star, .star::before{ animation:none; } }
 </style>
 </head>
 <body>
@@ -153,7 +165,7 @@
 
   // sparkle glyphs + pastel palette drawn from the Shelley Labs logo
   const GLYPHS = ['⊹','₊','˖','·','✦','✧','݁','.'];
-  const COLORS = ['#d9b8ea','#c4baf0','#b9ccf2','#cfe3f7','#f2c6da','#f6d4e3','#e9d8f2','#eef1f5'];
+  const COLORS = ['#c9a0ec','#a6b6f4','#86cdf2','#f2a3c8','#f4bcdd','#cb9cf1','#bfe6d8','#e9eef7'];
 
   function addStar(w){
     const id = String(w.id);
