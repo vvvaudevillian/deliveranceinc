@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Starmaker — A Sky of Wishes</title>
+<title>The Starmaker — A Cartography of Desires</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Spectral:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -54,33 +54,19 @@
 
   /* stars */
   .star{
-    position:absolute; z-index:4; border:none; padding:0; cursor:pointer;
-    width:var(--s,9px); height:var(--s,9px); border-radius:50%;
-    background:radial-gradient(circle at 50% 50%, #fff 0%, #fff4d6 45%, rgba(255,236,180,0) 72%);
-    box-shadow:
-      0 0 6px 2px rgba(255,244,210,.95),
-      0 0 16px 5px rgba(255,232,170,.65),
-      0 0 34px 11px rgba(255,220,150,.32);
-    transform:translate(-50%,-50%); transition:transform .25s ease, box-shadow .25s ease;
+    position:absolute; z-index:4; border:none; background:none; padding:0; cursor:pointer;
+    font-family:"Segoe UI Symbol","Apple Symbols",system-ui,"Noto Sans Symbols",sans-serif;
+    font-size:var(--s,18px); line-height:1; color:var(--c,#cfe0f5);
+    text-shadow:0 0 5px var(--c,#cfe0f5), 0 0 13px var(--c,#cfe0f5);
+    transform:translate(-50%,-50%); transition:transform .25s ease, text-shadow .25s ease;
     animation:glow var(--tw,4s) ease-in-out infinite;
-  }
-  .star::after{ /* soft pulsing halo so dots read as 'alive' against the meteor streaks */
-    content:""; position:absolute; left:50%; top:50%; width:320%; height:320%;
-    transform:translate(-50%,-50%); border-radius:50%; pointer-events:none;
-    background:radial-gradient(circle, rgba(255,238,190,.28), rgba(255,238,190,0) 68%);
-    animation:halo var(--tw,4s) ease-in-out infinite;
+    user-select:none; -webkit-user-select:none;
   }
   .star:hover, .star:focus-visible{
-    outline:none; transform:translate(-50%,-50%) scale(2.2);
-    box-shadow:0 0 10px 3px #fff, 0 0 28px 8px rgba(255,236,180,.95), 0 0 54px 18px rgba(255,220,150,.5);
+    outline:none; transform:translate(-50%,-50%) scale(1.9);
+    text-shadow:0 0 8px var(--c,#cfe0f5), 0 0 22px var(--c,#cfe0f5), 0 0 40px var(--c,#cfe0f5);
   }
-  .star.mine{
-    background:radial-gradient(circle at 50% 50%, #fff 0%, #cfe6ff 45%, rgba(150,200,255,0) 74%);
-    box-shadow:0 0 6px 2px rgba(210,232,255,.95), 0 0 18px 6px rgba(150,200,255,.6), 0 0 38px 12px rgba(120,180,255,.3);
-  }
-  .star.mine::after{ background:radial-gradient(circle, rgba(180,215,255,.30), rgba(180,215,255,0) 68%); }
-  @keyframes glow{ 0%,100%{opacity:.72;} 50%{opacity:1;} }
-  @keyframes halo{ 0%,100%{opacity:.22; transform:translate(-50%,-50%) scale(.82);} 50%{opacity:.5; transform:translate(-50%,-50%) scale(1.18);} }
+  @keyframes glow{ 0%,100%{opacity:.7;} 50%{opacity:1;} }
 
   /* detail panel */
   .panel{
@@ -109,7 +95,7 @@
     .head{ padding:3.4vh 7vw; } .back{ top:3.4vh; right:7vw; }
     .head p{ font-size:.9rem; }
   }
-  @media (prefers-reduced-motion: reduce){ .star, .star::after{ animation:none; } }
+  @media (prefers-reduced-motion: reduce){ .star{ animation:none; } }
 </style>
 </head>
 <body>
@@ -165,15 +151,22 @@
     return { x: 10 + (h % 1000)/1000*80, y: 12 + ((h>>10) % 1000)/1000*74 };
   }
 
+  // sparkle glyphs + pastel palette drawn from the Shelley Labs logo
+  const GLYPHS = ['⊹','₊','˖','·','✦','✧','݁','.'];
+  const COLORS = ['#d9b8ea','#c4baf0','#b9ccf2','#cfe3f7','#f2c6da','#f6d4e3','#e9d8f2','#eef1f5'];
+
   function addStar(w){
     const id = String(w.id);
     if(seen.has(id)) return; seen.add(id);
     const {x,y} = place(w);
+    const h = hash(id);
     const b = document.createElement('button');
     b.className = 'star';
-    const size = 7 + (hash(id) % 8);          // 7–14px, varied
+    b.textContent = GLYPHS[h % GLYPHS.length];
+    b.style.setProperty('--c', COLORS[(h >> 3) % COLORS.length]);
+    const size = 15 + (h % 16);               // 15–30px, varied
     b.style.setProperty('--s', size+'px');
-    b.style.setProperty('--tw', (3 + (hash(id)%40)/10) + 's');
+    b.style.setProperty('--tw', (3 + (h % 40)/10) + 's');
     b.style.left = x + '%'; b.style.top = y + '%';
     b.setAttribute('aria-label','a wish');
     b.addEventListener('click', ()=>open(w));
