@@ -22,7 +22,7 @@
   }
 
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth; scroll-snap-type:y mandatory;}
   body{
     margin:0;
     font-family:var(--body);
@@ -31,7 +31,6 @@
     color:#3a3326;
     background:#0c2a2c;
     -webkit-font-smoothing:antialiased;
-    scroll-snap-type:y proximity;
     overflow-x:hidden;
   }
 
@@ -87,35 +86,15 @@
   }
   .river .caustics{
     background:
-      radial-gradient(42% 24% at 28% 18%, rgba(222,247,255,.18), transparent 60%),
-      radial-gradient(38% 20% at 72% 32%, rgba(200,240,255,.14), transparent 60%),
-      repeating-linear-gradient(118deg, rgba(255,255,255,.05) 0 12px, transparent 12px 44px),
-      repeating-linear-gradient(62deg, rgba(255,255,255,.04) 0 10px, transparent 10px 40px);
+      radial-gradient(48% 30% at 28% 20%, rgba(222,247,255,.14), transparent 64%),
+      radial-gradient(42% 24% at 72% 36%, rgba(200,240,255,.10), transparent 64%);
     mix-blend-mode:screen;
-    animation:caustic 15s ease-in-out infinite alternate;
+    animation:caustic 18s ease-in-out infinite alternate;
   }
-  .river .rays{
-    inset:0;
-    background:
-      linear-gradient(99deg, transparent 16%, rgba(232,249,255,.11) 23%, transparent 31%),
-      linear-gradient(86deg, transparent 50%, rgba(220,245,255,.08) 57%, transparent 65%),
-      linear-gradient(93deg, transparent 74%, rgba(232,249,255,.07) 81%, transparent 89%);
-    mix-blend-mode:screen;
-    animation:rays 20s ease-in-out infinite alternate;
-  }
-  .river .motes{
-    inset:0;
-    background-image:radial-gradient(rgba(255,255,255,.55) 1px, transparent 1.5px);
-    background-size:130px 130px;
-    opacity:.16;
-    animation:rise 26s linear infinite;
-  }
-  @keyframes caustic{ 0%{transform:translate(-3%,-2%) scale(1.05);} 100%{transform:translate(3%,2%) scale(1.13);} }
-  @keyframes rays{ 0%{transform:translateX(-4%);} 100%{transform:translateX(4%);} }
-  @keyframes rise{ 0%{background-position:0 0;} 100%{background-position:18px -520px;} }
+  @keyframes caustic{ 0%{transform:translate(-2%,-1%) scale(1.04);} 100%{transform:translate(2%,1%) scale(1.10);} }
   @media (prefers-reduced-motion: reduce){
     .river{transition:none;}
-    .river .caustics, .river .rays, .river .motes{ animation:none; }
+    .river .caustics{ animation:none; }
   }
 
   /* descending light indicator */
@@ -140,7 +119,8 @@
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     text-align:center;
     padding:14vh 8vw;
-    scroll-snap-align:center;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
     overflow:hidden;
   }
   .inner{ max-width:680px; position:relative; z-index:3; }
@@ -246,7 +226,7 @@
 
 <div class="grain"></div>
 <div class="vignette"></div>
-<div class="river" id="river"><div class="tint"></div><div class="rays"></div><div class="caustics"></div><div class="motes"></div></div>
+<div class="river" id="river"><div class="tint"></div><div class="caustics"></div></div>
 <div class="descent"><span class="orb" id="orb"></span></div>
 
 <!-- SVG arch template, cloned into each station -->
