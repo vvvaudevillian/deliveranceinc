@@ -65,10 +65,10 @@
   /* soft diffused halo so every star — even a tiny glyph — glows clearly in its colour */
   .star::before{
     content:""; position:absolute; left:50%; top:50%; z-index:-1; pointer-events:none;
-    width:calc(var(--s,22px) * 3.8); height:calc(var(--s,22px) * 3.8);
+    width:calc(var(--s,24px) * 4.4); height:calc(var(--s,24px) * 4.4);
     transform:translate(-50%,-50%); border-radius:50%;
-    background:radial-gradient(circle, rgba(255,255,255,.95) 0%, var(--c,#cfe0f5) 32%, rgba(255,255,255,0) 72%);
-    opacity:.78; filter:blur(5px);
+    background:radial-gradient(circle, #ffffff 0%, #ffffff 14%, var(--c,#cfe0f5) 34%, rgba(255,255,255,0) 74%);
+    opacity:.92; filter:blur(4px);
     transition:opacity .25s ease, width .25s ease, height .25s ease, filter .25s ease;
     animation:halo var(--tw,4s) ease-in-out infinite;
   }
@@ -78,7 +78,7 @@
     width:calc(var(--s,22px) * 5); height:calc(var(--s,22px) * 5);
   }
   @keyframes glow{ 0%,100%{opacity:.85;} 50%{opacity:1;} }
-  @keyframes halo{ 0%,100%{opacity:.6;} 50%{opacity:.95;} }
+  @keyframes halo{ 0%,100%{opacity:.8;} 50%{opacity:1;} }
 
   /* detail panel */
   .panel{
@@ -165,7 +165,7 @@
 
   // sparkle glyphs + pastel palette drawn from the Shelley Labs logo
   const GLYPHS = ['⊹','₊','˖','·','✦','✧','݁','.'];
-  const COLORS = ['#c9a0ec','#a6b6f4','#86cdf2','#f2a3c8','#f4bcdd','#cb9cf1','#bfe6d8','#e9eef7'];
+  const COLORS = ['#c79bf0','#9bb4f7','#79c7f5','#f29ac6','#f0a8d8','#b98cf2','#8fe0c8','#d9c0f5'];
 
   function addStar(w){
     const id = String(w.id);
@@ -176,7 +176,7 @@
     b.className = 'star';
     b.textContent = GLYPHS[h % GLYPHS.length];
     b.style.setProperty('--c', COLORS[(h >> 3) % COLORS.length]);
-    const size = 15 + (h % 16);               // 15–30px, varied
+    const size = 18 + (h % 15);               // 18–32px, varied
     b.style.setProperty('--s', size+'px');
     b.style.setProperty('--tw', (3 + (h % 40)/10) + 's');
     b.style.left = x + '%'; b.style.top = y + '%';
