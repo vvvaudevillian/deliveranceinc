@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>THE STARMAKER — A Sky of Wishes</title>
+<title>THE STARMAKER — A Deliverance of Wishes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Spectral:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap">
+
 <style>
   :root{
     --sans: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
@@ -21,7 +23,8 @@
   html{scroll-behavior:smooth; scroll-snap-type:y mandatory;}
   body{
     margin:0;
-    font-family:var(--sans);
+    /* font-family:var(--sans); */
+    font-family: 'IBM Plex Sans', sans-serif;
     font-weight:400;
     line-height:1.6;
     color:var(--muted);
@@ -181,6 +184,33 @@
   }
   .door-response.show{ opacity:1; transform:none; }
 
+  /* ===== wish form (Station V) ===== */
+  .wishform{ width:100%; max-width:560px; margin-top:2rem; display:flex; flex-direction:column; gap:1.1rem; }
+  .wf-field{ display:flex; flex-direction:column; gap:.4rem; }
+  .wf-key{ font-family:var(--label); text-transform:uppercase; font-size:.6rem; letter-spacing:.22em; color:var(--faint); }
+  .wf-label{ font-family:var(--sans); font-weight:400; font-size:1.02rem; color:var(--ink); }
+  .wishform textarea, .wishform input{
+    font-family:var(--sans); font-weight:300; color:var(--ink);
+    background:rgba(255,255,255,.05); border:1px solid rgba(233,238,244,.22); border-radius:4px;
+    padding:.7rem .8rem; resize:none; width:100%;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  .wishform textarea::placeholder, .wishform input::placeholder{ color:rgba(233,238,244,.32); }
+  .wishform textarea:focus, .wishform input:focus{ outline:none; border-color:rgba(233,238,244,.6); background:rgba(255,255,255,.08); }
+  .wf-row{ display:flex; gap:.8rem; align-items:stretch; flex-wrap:wrap; }
+  .wf-row input{ flex:1 1 200px; }
+  .wf-btn{
+    font-family:var(--sans); font-weight:500; font-size:.92rem; letter-spacing:.01em;
+    color:#06080e; background:#eef1f5; border:1px solid #eef1f5; border-radius:999px;
+    padding:.7rem 1.6rem; cursor:pointer; white-space:nowrap;
+    transition:transform .3s ease, background .3s ease, opacity .3s ease;
+  }
+  .wf-btn:hover{ transform:translateY(-2px); background:#fff; }
+  .wf-btn:disabled{ opacity:.5; cursor:default; transform:none; }
+  .wf-msg{ font-family:var(--sans); font-weight:300; font-style:italic; color:rgba(233,238,244,.72); font-size:1rem; min-height:1.2rem; margin:.2rem 0 0; }
+  .wf-msg a{ color:var(--ink); text-decoration:underline; text-underline-offset:3px; font-style:normal; }
+  .wf-done .wf-field, .wf-done .wf-row{ display:none; }
+
   .colophon{
     font-family:var(--label); text-transform:uppercase; font-size:.62rem; letter-spacing:.24em;
     color:var(--faint); margin-top:2.6rem;
@@ -299,25 +329,29 @@
     <h2 class="reveal">Tell me<br>two wishes.</h2>
     <p class="lede reveal">Before you go, leave me two lights to carry. The form is small — a wish does not need many words to burn.</p>
 
-    <div class="doors reveal">
-      <button class="door" data-resp="Then it is not yet time for your star. Go and live the wish — the night will keep, and so will your place in it.">
-        <span class="dkey">the wish that stays</span>
-        <span class="dtitle">What I still want to do</span>
-        <span class="dsub">The wishes that keep you here a while longer — the next about, the unfinished song, the morning you are not done with.</span>
-      </button>
-      <button class="door" data-resp="Then I will hang it tonight. Wander the night, if you like, and see whose wishes are already burning.">
-        <span class="dkey">the wish that travels</span>
-        <span class="dtitle">What I wish beyond</span>
-        <span class="dsub">For the worlds after this one — what you hope they hold, or what you fear and would still sail toward. This is the star I send into the dark.</span>
-      </button>
-    </div>
-
-    <div class="door-response" id="resp"></div>
+    <form class="wishform reveal" id="wishform" autocomplete="off">
+      <label class="wf-field">
+        <span class="wf-key">the wish that stays</span>
+        <span class="wf-label">What I still want to do</span>
+        <textarea id="wish-stays" maxlength="280" rows="2" placeholder="the next about, the unfinished song, the morning you are not done with…"></textarea>
+      </label>
+      <label class="wf-field">
+        <span class="wf-key">the wish that travels · this becomes your star</span>
+        <span class="wf-label">What I wish beyond</span>
+        <textarea id="wish-beyond" maxlength="280" rows="2" placeholder="what you hope another world holds — or what you fear and would sail toward anyway…"></textarea>
+      </label>
+      <div class="wf-row">
+        <input id="wish-name" maxlength="40" placeholder="a name to sign by (optional)">
+        <button type="submit" id="wish-submit" class="wf-btn">Hang my star</button>
+      </div>
+      <p class="wf-msg" id="wish-msg" role="status"></p>
+    </form>
     <!-- COLOPHON · replace the seal below with your handle (e.g. catslovefish.eth) -->
     <div class="colophon">The Starmaker · a sky of wishes for the 67th fair · sealed by ——————</div>
   </div>
 </section>
 
+<script src="config.js"></script>
 <script>
   // reveal on scroll
   const io = new IntersectionObserver((entries)=>{
@@ -352,13 +386,52 @@
   }, {threshold:0.5});
   document.querySelectorAll('.station').forEach(s=>spy.observe(s));
 
-  // doors
-  const resp = document.getElementById('resp');
-  document.querySelectorAll('.door').forEach(d=>{
-    d.addEventListener('click', ()=>{
-      resp.textContent = d.getAttribute('data-resp');
-      resp.classList.remove('show'); void resp.offsetWidth; resp.classList.add('show');
-    });
+  // ===== shared data layer =====
+  // Reads keys from config.js (window.STARMAKER_CFG). If that file is missing
+  // (e.g. a quick local preview), it falls back to this browser only.
+  const CFG = (window.STARMAKER_CFG) || { url:"", key:"" };
+  const LIVE = /^https:\/\/.+\.supabase\.co/.test(CFG.url) && CFG.key && CFG.key.length > 20;
+  const Wishes = {
+    async add(w){
+      if(LIVE){
+        const r = await fetch(CFG.url + "/rest/v1/wishes", {
+          method:"POST",
+          headers:{ apikey:CFG.key, Authorization:"Bearer "+CFG.key, "Content-Type":"application/json", Prefer:"return=representation" },
+          body: JSON.stringify(w)
+        });
+        if(!r.ok) throw new Error(await r.text());
+        return (await r.json())[0];
+      }
+      const all = Wishes._local(); w.id="local-"+Date.now();
+      all.push(w); try{ localStorage.setItem("starmaker_wishes", JSON.stringify(all)); }catch(e){}
+      return w;
+    },
+    _local(){ try{ return JSON.parse(localStorage.getItem("starmaker_wishes")||"[]"); }catch(e){ return []; } }
+  };
+
+  // ===== wish form =====
+  const form = document.getElementById('wishform');
+  const msg = document.getElementById('wish-msg');
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const beyond = document.getElementById('wish-beyond').value.trim();
+    const stays  = document.getElementById('wish-stays').value.trim();
+    const name   = document.getElementById('wish-name').value.trim();
+    if(!beyond){ msg.textContent = "Leave at least the wish that travels — that is the one that becomes your star."; return; }
+    const btn = document.getElementById('wish-submit');
+    btn.disabled = true; msg.textContent = "Hanging your star…";
+    // a fixed place in the sky, kept away from the dark edges
+    const x = +(10 + Math.random()*80).toFixed(2);
+    const y = +(12 + Math.random()*74).toFixed(2);
+    try{
+      await Wishes.add({ beyond, stays: stays||null, name: name||null, x, y });
+      form.classList.add('wf-done');
+      msg.innerHTML = 'Your star is hung. <a href="sky.html">Walk the night sky →</a>';
+    }catch(err){
+      btn.disabled = false;
+      msg.textContent = "The sky did not take it — try once more in a moment.";
+      console.error(err);
+    }
   });
 </script>
 </body>
