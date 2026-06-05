@@ -175,7 +175,7 @@
     const b = document.createElement('button');
     b.className = 'star';
     b.textContent = GLYPHS[h % GLYPHS.length];
-    b.style.setProperty('--c', COLORS[(h >> 3) % COLORS.length]);
+    b.style.setProperty('--c', COLORS[(h >>> 3) % COLORS.length] || '#cfe0f5');
     const size = 18 + (h % 15);               // 18–32px, varied
     b.style.setProperty('--s', size+'px');
     b.style.setProperty('--tw', (3 + (h % 40)/10) + 's');
